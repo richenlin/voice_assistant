@@ -1,0 +1,99 @@
+# 语音助手服务端配置
+# 默认配置：FunASR + Ollama + ChatTTS (完全离线)
+
+# 服务器配置
+server:
+  host: "0.0.0.0"
+  port: 8080
+
+# WebSocket配置
+websocket:
+  read_buffer_size: 1024
+  write_buffer_size: 1024
+  max_connections: 100
+  ping_period: 54s
+  pong_wait: 60s
+  write_wait: 10s
+
+# ASR配置 - 默认使用FunASR（离线，高准确率95%+）
+asr:
+  provider: "funasr"  # 默认离线ASR
+  funasr:
+    model_dir: "./models/funasr/paraformer-zh"
+    model_revision: "v1.0.4"
+    device_id: "cpu"
+    intra_op_num_threads: 4
+    batch_size: 1
+    max_sentence_length: 512
+  whisper:
+    model_path: "./models/whisper/ggml-base.bin"
+    language: "zh"
+  openai:
+    api_key: "${OPENAI_API_KEY}"
+    model: "whisper-1"
+  settings:
+    sample_rate: 16000
+    channels: 1
+
+# LLM配置 - 默认使用Ollama（离线，本地部署）
+llm:
+  provider: "ollama"  # 默认离线LLM
+  ollama:
+    base_url: "http://localhost:11434"
+    model: "qwen:7b"  # 推荐的中文模型
+  openai:
+    api_key: "${OPENAI_API_KEY}"
+    model: "gpt-3.5-turbo"
+    temperature: 0.7
+    max_tokens: 2000
+  websocket:
+    url: "ws://localhost:8081/llm"
+  settings:
+    max_context_length: 4000
+    enable_context_trim: true
+
+# TTS配置 - 默认使用ChatTTS（离线，顶级音质）
+tts:
+  provider: "chattts"  # 默认离线TTS
+  chattts:
+    model_path: ""  # 留空则自动下载
+    device: "cpu"
+    temperature: 0.3
+    top_p: 0.7
+    top_k: 20
+    speaker_id: 0
+    num_threads: 4
+  edge_tts:
+    voice: "zh-CN-XiaoxiaoNeural"
+    rate: "+0%"
+    volume: "+0%"
+    pitch: "+0Hz"
+  sherpa:
+    model_path: "./models/sherpa/vits-zh-hf-fanchen-C"
+  settings:
+    sample_rate: 24000
+    format: "wav"
+    quality: "high"
+
+# 日志配置
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+
+# 在线配置示例（需要API密钥）
+# asr:
+#   provider: "openai"
+#   openai:
+#     api_key: "${OPENAI_API_KEY}"
+#
+# llm:
+#   provider: "openai"
+#   openai:
+#     api_key: "${OPENAI_API_KEY}"
+#     model: "gpt-3.5-turbo"
+#
+# tts:
+#   provider: "edge_tts"
+#   edge_tts:
+#     voice: "zh-CN-XiaoxiaoNeural" 

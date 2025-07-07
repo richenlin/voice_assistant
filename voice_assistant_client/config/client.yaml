@@ -1,0 +1,158 @@
+# 语音助手客户端配置文件
+
+# 服务器连接配置
+server:
+  host: "localhost"
+  port: 8080
+  use_tls: false
+  websocket_path: "/ws"
+  reconnect_interval: 5s
+  max_reconnect_attempts: 10
+  connection_timeout: 10s
+  ping_interval: 30s
+  pong_timeout: 10s
+
+# 音频配置
+audio:
+  # 输入设备配置
+  input:
+    device_id: -1  # -1表示默认设备
+    sample_rate: 16000
+    channels: 1
+    format: "pcm_16bit"
+    buffer_size: 1024
+    chunk_duration: 100  # 毫秒
+    
+  # 输出设备配置
+  output:
+    device_id: -1  # -1表示默认设备
+    sample_rate: 16000
+    channels: 1
+    format: "pcm_16bit"
+    buffer_size: 1024
+    
+  # VAD配置
+  vad:
+    enabled: true
+    threshold: 0.5
+    min_speech_duration: 300   # 毫秒
+    min_silence_duration: 500  # 毫秒
+    pre_emphasis: 0.97
+    
+  # 音频处理配置
+  processing:
+    noise_reduction: true
+    auto_gain_control: true
+    echo_cancellation: false
+    volume_normalization: true
+
+# 会话配置
+session:
+  mode: "continuous"  # continuous, single, wakeword
+  timeout: 30m
+  auto_reconnect: true
+  keep_alive_interval: 30s
+  max_message_size: 1048576  # 1MB
+  
+  # 唤醒词配置（如果使用wakeword模式）
+  wakeword:
+    enabled: false
+    keywords: ["小助手", "语音助手"]
+    sensitivity: 0.8
+    
+# 用户界面配置
+ui:
+  type: "console"  # console, gui, headless
+  log_level: "info"  # debug, info, warn, error
+  show_audio_level: true
+  show_connection_status: true
+  
+  # 控制台界面配置
+  console:
+    colored_output: true
+    show_timestamps: true
+    prompt: "语音助手> "
+    
+  # GUI界面配置（如果使用gui模式）
+  gui:
+    window_title: "语音助手客户端"
+    window_width: 800
+    window_height: 600
+    theme: "default"
+
+# 日志配置
+logging:
+  level: "info"
+  format: "text"  # text, json
+  output: "stdout"  # stdout, file
+  file_path: "logs/client.log"
+  max_size: 10  # MB
+  max_backups: 5
+  max_age: 30  # 天
+  compress: true
+
+# 性能配置
+performance:
+  # 缓冲区配置
+  audio_buffer_size: 8192
+  message_buffer_size: 100
+  
+  # 并发配置
+  max_concurrent_streams: 1  # 客户端通常只需要1个流
+  worker_threads: 2
+  
+  # 内存配置
+  max_memory_usage: 128  # MB
+  gc_percent: 100
+
+# 安全配置
+security:
+  # TLS配置
+  tls:
+    enabled: false
+    cert_file: ""
+    key_file: ""
+    ca_file: ""
+    insecure_skip_verify: false
+    
+  # 认证配置
+  auth:
+    enabled: false
+    type: "token"  # token, basic
+    token: ""
+    username: ""
+    password: ""
+
+# 高级配置
+advanced:
+  # 调试配置
+  debug:
+    enabled: false
+    dump_audio: false
+    dump_messages: false
+    profile_cpu: false
+    profile_memory: false
+    
+  # 实验性功能
+  experimental:
+    use_binary_protocol: false
+    enable_compression: false
+    adaptive_bitrate: false
+    
+  # 兼容性配置
+  compatibility:
+    legacy_protocol: false
+    fallback_format: "pcm_16bit"
+
+# Windows特定配置
+windows:
+  # 音频驱动选择
+  audio_driver: "wasapi"  # wasapi|directsound|mme
+  
+  # 系统集成
+  system_tray: true
+  auto_start: false
+  
+  # 性能优化
+  high_priority: false
+  large_address_aware: true 
